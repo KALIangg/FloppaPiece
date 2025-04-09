@@ -1,122 +1,198 @@
--- GGZERA STYLE HUB FULL LUAU UI by LUA GOD 💻🔥
+-- [[ LUA GOD HUB - GGZERA + RAYFIELD STYLE UI (ALL-IN-ONE) ]] --
+
 local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local LocalPlayer = Players.LocalPlayer
 
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-ScreenGui.IgnoreGuiInset = true
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Name = "LuaGodGGZeraUI"
+local function Create(class, props)
+	local inst = Instance.new(class)
+	for i,v in pairs(props) do
+		inst[i] = v
+	end
+	return inst
+end
 
-local Main = Instance.new("Frame", ScreenGui)
-Main.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-Main.BorderSizePixel = 0
-Main.Position = UDim2.new(0.3, 0, 0.3, 0)
-Main.Size = UDim2.new(0, 420, 0, 320)
-Main.Active = true
-Main.Draggable = true
+local Gui = Create("ScreenGui", {
+	Name = "LuaGodGGHub",
+	Parent = game.CoreGui,
+	IgnoreGuiInset = true,
+	ResetOnSpawn = false
+})
 
-local Title = Instance.new("TextLabel", Main)
-Title.Text = "Lua God Hub - GGZera Style"
-Title.Font = Enum.Font.GothamBold
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Size = UDim2.new(1, 0, 0, 40)
-Title.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-Title.BorderSizePixel = 0
-Title.TextSize = 18
+local Main = Create("Frame", {
+	Size = UDim2.new(0, 440, 0, 360),
+	Position = UDim2.new(0.5, -220, 0.5, -180),
+	BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+	BorderSizePixel = 0,
+	Active = true,
+	Draggable = true,
+	Parent = Gui
+})
 
-local Close = Instance.new("TextButton", Main)
-Close.Text = "X"
-Close.Font = Enum.Font.GothamBold
-Close.TextColor3 = Color3.fromRGB(255, 50, 50)
-Close.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-Close.Size = UDim2.new(0, 40, 0, 40)
-Close.Position = UDim2.new(1, -40, 0, 0)
-Close.BorderSizePixel = 0
-Close.TextSize = 20
+local Header = Create("Frame", {
+	Size = UDim2.new(1, 0, 0, 35),
+	BackgroundColor3 = Color3.fromRGB(30, 30, 30),
+	BorderSizePixel = 0,
+	Parent = Main
+})
 
+local Title = Create("TextBox", {
+	Text = "LuaGod Hub 👑",
+	TextColor3 = Color3.fromRGB(255, 255, 255),
+	Font = Enum.Font.GothamBold,
+	TextSize = 16,
+	BackgroundTransparency = 1,
+	Size = UDim2.new(1, -40, 1, 0),
+	Position = UDim2.new(0, 10, 0, 0),
+	ClearTextOnFocus = false,
+	Parent = Header
+})
+
+local Close = Create("TextButton", {
+	Text = "X",
+	Font = Enum.Font.GothamBold,
+	TextColor3 = Color3.fromRGB(255, 50, 50),
+	TextSize = 18,
+	BackgroundTransparency = 1,
+	Size = UDim2.new(0, 35, 1, 0),
+	Position = UDim2.new(1, -35, 0, 0),
+	Parent = Header
+})
 Close.MouseButton1Click:Connect(function()
-	ScreenGui:Destroy()
+	Gui:Destroy()
 end)
 
-local Container = Instance.new("Frame", Main)
-Container.BackgroundTransparency = 1
-Container.Position = UDim2.new(0, 10, 0, 50)
-Container.Size = UDim2.new(1, -20, 1, -60)
+local Holder = Create("Frame", {
+	Size = UDim2.new(1, -20, 1, -50),
+	Position = UDim2.new(0, 10, 0, 40),
+	BackgroundTransparency = 1,
+	Parent = Main
+})
 
-local UIListLayout = Instance.new("UIListLayout", Container)
-UIListLayout.Padding = UDim.new(0, 10)
+local Layout = Instance.new("UIListLayout", Holder)
+Layout.Padding = UDim.new(0, 10)
 
--- FUNÇÃO RAPIDA DE CRIAÇÃO DE TOGGLE
-local function CreateToggle(text, callback)
-	local Toggle = Instance.new("TextButton", Container)
-	Toggle.Size = UDim2.new(1, 0, 0, 30)
-	Toggle.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	Toggle.BorderSizePixel = 0
-	Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Toggle.Font = Enum.Font.Gotham
-	Toggle.TextSize = 16
-	Toggle.Text = text .. ": OFF"
-	
+--[[ ELEMENTOS ]]--
+
+function AddTitle(txt)
+	Create("TextLabel", {
+		Parent = Holder,
+		Text = txt,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		Font = Enum.Font.GothamBold,
+		TextSize = 16,
+		BackgroundTransparency = 1,
+		Size = UDim2.new(1,0,0,25)
+	})
+end
+
+function AddButton(txt, callback)
+	local btn = Create("TextButton", {
+		Text = txt,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		BackgroundColor3 = Color3.fromRGB(35,35,35),
+		Font = Enum.Font.Gotham,
+		TextSize = 15,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1,0,0,30),
+		Parent = Holder
+	})
+	btn.MouseButton1Click:Connect(callback)
+end
+
+function AddToggle(txt, callback)
 	local state = false
-	Toggle.MouseButton1Click:Connect(function()
+	local btn = Create("TextButton", {
+		Text = txt..": OFF",
+		TextColor3 = Color3.fromRGB(255,255,255),
+		BackgroundColor3 = Color3.fromRGB(35,35,35),
+		Font = Enum.Font.Gotham,
+		TextSize = 15,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1,0,0,30),
+		Parent = Holder
+	})
+	btn.MouseButton1Click:Connect(function()
 		state = not state
-		Toggle.Text = text .. ": " .. (state and "ON" or "OFF")
-		if callback then callback(state) end
+		btn.Text = txt..": "..(state and "ON" or "OFF")
+		callback(state)
 	end)
 end
 
--- DROPDOWN STYLE
-local function CreateDropdown(text, list, callback)
-	local Drop = Instance.new("TextButton", Container)
-	Drop.Size = UDim2.new(1, 0, 0, 30)
-	Drop.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	Drop.BorderSizePixel = 0
-	Drop.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Drop.Font = Enum.Font.Gotham
-	Drop.TextSize = 16
-	Drop.Text = text
-
-	Drop.MouseButton1Click:Connect(function()
-		Drop.Text = text .. ": " .. list[math.random(1, #list)]
-		if callback then callback(Drop.Text) end
-	end)
-end
-
--- SLIDER STYLE
-local function CreateSlider(text, min, max, callback)
-	local Slider = Instance.new("TextButton", Container)
-	Slider.Size = UDim2.new(1, 0, 0, 30)
-	Slider.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-	Slider.BorderSizePixel = 0
-	Slider.TextColor3 = Color3.fromRGB(255, 255, 255)
-	Slider.Font = Enum.Font.Gotham
-	Slider.TextSize = 16
-	local value = min
-	Slider.Text = text .. ": " .. tostring(value)
-	
-	Slider.MouseButton1Click:Connect(function()
-		value = value + 1
+function AddSlider(txt, min, max, def, callback)
+	local value = def
+	local btn = Create("TextButton", {
+		Text = txt..": "..value,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		BackgroundColor3 = Color3.fromRGB(35,35,35),
+		Font = Enum.Font.Gotham,
+		TextSize = 15,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1,0,0,30),
+		Parent = Holder
+	})
+	btn.MouseButton1Click:Connect(function()
+		value += 1
 		if value > max then value = min end
-		Slider.Text = text .. ": " .. tostring(value)
-		if callback then callback(value) end
+		btn.Text = txt..": "..value
+		callback(value)
 	end)
 end
 
--- COLOR PICKER SIMPLIFICADO
-local function CreateColor(text, callback)
-	local Btn = Instance.new("TextButton", Container)
-	Btn.Size = UDim2.new(1, 0, 0, 30)
-	Btn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	Btn.BorderSizePixel = 0
-	Btn.TextColor3 = Color3.fromRGB(0, 0, 0)
-	Btn.Font = Enum.Font.Gotham
-	Btn.TextSize = 16
-	Btn.Text = text
-	
-	Btn.MouseButton1Click:Connect(function()
-		local color = Color3.fromRGB(math.random(255), math.random(255), math.random(255))
-		Btn.BackgroundColor3 = color
-		if callback then callback(color) end
+function AddDropdown(txt, list, callback)
+	local btn = Create("TextButton", {
+		Text = txt,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		BackgroundColor3 = Color3.fromRGB(35,35,35),
+		Font = Enum.Font.Gotham,
+		TextSize = 15,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1,0,0,30),
+		Parent = Holder
+	})
+	btn.MouseButton1Click:Connect(function()
+		local picked = list[math.random(1,#list)]
+		btn.Text = txt..": "..picked
+		callback(picked)
 	end)
+end
+
+function AddColor(txt, callback)
+	local btn = Create("TextButton", {
+		Text = txt,
+		TextColor3 = Color3.fromRGB(0,0,0),
+		BackgroundColor3 = Color3.fromRGB(255,255,255),
+		Font = Enum.Font.Gotham,
+		TextSize = 15,
+		BorderSizePixel = 0,
+		Size = UDim2.new(1,0,0,30),
+		Parent = Holder
+	})
+	btn.MouseButton1Click:Connect(function()
+		local color = Color3.fromRGB(math.random(255), math.random(255), math.random(255))
+		btn.BackgroundColor3 = color
+		callback(color)
+	end)
+end
+
+function Notify(text)
+	local notify = Create("TextLabel", {
+		Parent = Gui,
+		Text = text,
+		TextColor3 = Color3.fromRGB(255,255,255),
+		Font = Enum.Font.GothamBold,
+		TextSize = 14,
+		BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+		BorderSizePixel = 0,
+		AnchorPoint = Vector2.new(0.5,0),
+		Position = UDim2.new(0.5, 0, 0, -40),
+		Size = UDim2.new(0, 300, 0, 35)
+	})
+	
+	TweenService:Create(notify, TweenInfo.new(0.3), {Position = UDim2.new(0.5, 0, 0, 10)}):Play()
+	task.wait(2.5)
+	TweenService:Create(notify, TweenInfo.new(0.3), {Position = UDim2.new(0.5, 0, 0, -40)}):Play()
+	task.wait(0.5)
+	notify:Destroy()
 end
