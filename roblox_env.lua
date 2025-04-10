@@ -1,0 +1,2 @@
+-- fake Lua Roblox environment definition
+-- restante do código do roblox_env.lua aqui
